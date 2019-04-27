@@ -2,11 +2,11 @@ version: '3'
 services:
   tao:
     build: .
-    image: local/tao:0.7
+    image: local/tao:0.9
     depends_on:
       - database
     ports:
-      - "8080:80"
+      - "80:80"
   database:
     image: postgres:latest
     ports:

@@ -34,13 +34,13 @@ RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libpq-dev zip un
     echo 'opcache.load_comments=1'; \
 } >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini 
 
-
-RUN a2enmod rewrite
 # to see live logs we do : docker logs -f [CONTAINER ID]
 # without the following line we get "AH00558: apache2: Could not reliably determine the server's fully qualified domain name"
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN a2enmod rewrite \
+  && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
 # autorise .htaccess files
-RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+  && sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf \
+  && sed -i 's/#ServerName www.example.com/ServerName localhost/' /etc/apache2/sites-enabled/000-default.conf
 
 VOLUME /var/www/html
 
