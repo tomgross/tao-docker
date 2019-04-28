@@ -2,7 +2,7 @@ version: '3'
 services:
   tao:
     build: .
-    image: local/tao:0.9
+    image: local/tao:0.10
     depends_on:
       - database
     ports:

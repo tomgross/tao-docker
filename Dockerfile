@@ -1,30 +1,20 @@
-FROM php:7.3-apache
+FROM php:7.1-apache
 
 LABEL MAINTAINER="Tom Gross <itconsense@gmail.com>" 
 
 RUN usermod -u 1000 www-data && usermod -G staff www-data
 
-RUN apt-get update && apt-get install -y libpng-dev libjpeg-dev libpq-dev zip unzip libzip-dev sudo wget sqlite3 libsqlite3-dev \
+RUN apt-get update &&  apt-get install -y zip unzip libpng-dev libjpeg-dev libpq-dev zip unzip libzip-dev libtidy-dev \
   && rm -rf /var/lib/apt/lists/* \
+  && pecl install igbinary redis \
   && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-  && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd  \
   && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-  && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
   && docker-php-ext-configure zip --with-libzip \
-  &&  yes | pecl install igbinary redis \
-  && docker-php-ext-install pdo \
-  && docker-php-ext-install pdo_mysql \
-  && docker-php-ext-install mysqli \
-  && docker-php-ext-install pgsql \
-  && docker-php-ext-install pdo_pgsql \
-  && docker-php-ext-install pdo_sqlite \
-  && docker-php-ext-install gd \
-  && docker-php-ext-install mbstring \
-  && docker-php-ext-install opcache \
-  && docker-php-ext-install zip \
-  && docker-php-ext-install calendar \
+  && docker-php-ext-install pdo_pgsql calendar zip opcache tidy \
   && docker-php-ext-enable igbinary \
-  && docker-php-ext-enable redis \ { \
+  && docker-php-ext-enable redis 
+  
+RUN { \
     echo 'opcache.memory_consumption=128'; \
     echo 'opcache.interned_strings_buffer=8'; \
     echo 'opcache.max_accelerated_files=4000'; \
